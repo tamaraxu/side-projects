@@ -45,8 +45,6 @@ TIM_HandleTypeDef htim2;
 
 UART_HandleTypeDef huart2;
 
-// volatile uint32_t current_time = 0;
-
 /* Definitions for buttonInput */
 osThreadId_t buttonInputHandle;
 const osThreadAttr_t buttonInput_attributes = {
@@ -60,6 +58,13 @@ const osThreadAttr_t sendOut_attributes = {
   .name = "sendOut",
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityNormal,
+};
+/* Definitions for convertMsg */
+osThreadId_t convertMsgHandle;
+const osThreadAttr_t convertMsg_attributes = {
+  .name = "convertMsg",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityBelowNormal,
 };
 /* Definitions for morseMsg */
 osMessageQueueId_t morseMsgHandle;
@@ -77,6 +82,7 @@ static void MX_USART2_UART_Init(void);
 static void MX_TIM2_Init(void);
 void startButtonInput(void *argument);
 void startSendOut(void *argument);
+void startConvertMsg(void *argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -151,6 +157,9 @@ int main(void)
   /* creation of sendOut */
   sendOutHandle = osThreadNew(startSendOut, NULL, &sendOut_attributes);
 
+  /* creation of convertMsg */
+  convertMsgHandle = osThreadNew(startConvertMsg, NULL, &convertMsg_attributes);
+
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
@@ -168,7 +177,7 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-	  // current_time = __HAL_TIM_GET_COUNTER(&htim2);
+
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -241,7 +250,7 @@ static void MX_TIM2_Init(void)
 
   /* USER CODE END TIM2_Init 1 */
   htim2.Instance = TIM2;
-  htim2.Init.Prescaler = 84 - 1;
+  htim2.Init.Prescaler = 0;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim2.Init.Period = 4294967295;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
@@ -395,6 +404,24 @@ void startSendOut(void *argument)
     osDelay(1);
   }
   /* USER CODE END startSendOut */
+}
+
+/* USER CODE BEGIN Header_startConvertMsg */
+/**
+* @brief Function implementing the convertMsg thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_startConvertMsg */
+void startConvertMsg(void *argument)
+{
+  /* USER CODE BEGIN startConvertMsg */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END startConvertMsg */
 }
 
 /**
